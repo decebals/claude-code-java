@@ -1,0 +1,23 @@
+{
+  "servers": [
+    {
+      "name": "local-filesystem",
+      "type": "filesystem",
+      "root": "{{PROJECT_ROOT}}",
+      "read_only": false
+    },
+    {
+      "name": "github-mcp",
+      "type": "github",
+      "repo": "{{GITHUB_REPO}}",
+      "token_env": "GITHUB_TOKEN",
+      "read_only": true
+    },
+    {
+      "name": "git-local",
+      "type": "git",
+      "root": "{{PROJECT_ROOT}}",
+      "read_only": true
+    }
+  ]
+}
