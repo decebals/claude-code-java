@@ -36,6 +36,17 @@ chmod +x scripts/*.sh
 
 This creates `.claude/` with symlinked skills, generates `CLAUDE.md`, and configures settings.
 
+**Prefer manual setup?** Just copy or symlink the skills you want:
+```bash
+mkdir -p your-project/.claude/skills
+
+# Copy specific skills
+cp -r ~/projects/claude-code-java/.claude/skills/java-code-review your-project/.claude/skills/
+
+# Or symlink all skills
+ln -s ~/projects/claude-code-java/.claude/skills/* your-project/.claude/skills/
+```
+
 ### 3. Use with Claude Code
 ```bash
 cd ~/projects/your-java-project
