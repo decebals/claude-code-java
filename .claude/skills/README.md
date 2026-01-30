@@ -16,36 +16,36 @@ Each skill folder contains:
 ### Workflow
 | Skill | Description |
 |-------|-------------|
-| git-commit | Conventional commit messages for Java projects |
-| changelog-generator | Generate changelogs from git commits |
-| issue-triage | GitHub issue triage and categorization |
+| [git-commit](git-commit/) | Conventional commit messages for Java projects |
+| [changelog-generator](changelog-generator/) | Generate changelogs from git commits |
+| [issue-triage](issue-triage/) | GitHub issue triage and categorization |
 
 ### Code Quality
 | Skill | Description |
 |-------|-------------|
-| java-code-review | Systematic Java code review checklist |
-| api-contract-review | REST API audit: HTTP semantics, versioning, compatibility |
-| concurrency-review | Thread safety, race conditions, @Async, Virtual Threads |
-| performance-smell-detection | Code-level performance smells (streams, boxing, regex) |
-| test-quality | JUnit 5 + AssertJ testing patterns |
-| maven-dependency-audit | Audit dependencies for updates and vulnerabilities |
-| security-audit | OWASP Top 10, input validation, injection prevention |
+| [java-code-review](java-code-review/) | Systematic Java code review checklist |
+| [api-contract-review](api-contract-review/) | REST API audit: HTTP semantics, versioning, compatibility |
+| [concurrency-review](concurrency-review/) | Thread safety, race conditions, @Async, Virtual Threads |
+| [performance-smell-detection](performance-smell-detection/) | Code-level performance smells (streams, boxing, regex) |
+| [test-quality](test-quality/) | JUnit 5 + AssertJ testing patterns |
+| [maven-dependency-audit](maven-dependency-audit/) | Audit dependencies for updates and vulnerabilities |
+| [security-audit](security-audit/) | OWASP Top 10, input validation, injection prevention |
 
 ### Architecture & Design
 | Skill | Description |
 |-------|-------------|
-| architecture-review | Macro-level review: packages, modules, layers, boundaries |
-| solid-principles | S.O.L.I.D. principles with Java examples |
-| design-patterns | Factory, Builder, Strategy, Observer, Decorator, etc. |
-| clean-code | DRY, KISS, YAGNI, naming, refactoring |
+| [architecture-review](architecture-review/) | Macro-level review: packages, modules, layers, boundaries |
+| [solid-principles](solid-principles/) | S.O.L.I.D. principles with Java examples |
+| [design-patterns](design-patterns/) | Factory, Builder, Strategy, Observer, Decorator, etc. |
+| [clean-code](clean-code/) | DRY, KISS, YAGNI, naming, refactoring |
 
 ### Framework & Data
 | Skill | Description |
 |-------|-------------|
-| spring-boot-patterns | Spring Boot best practices |
-| java-migration | Java version upgrade guide (8→11→17→21) |
-| jpa-patterns | JPA/Hibernate patterns (N+1, lazy loading, transactions) |
-| logging-patterns | Structured logging (JSON), SLF4J, MDC, AI-friendly formats |
+| [spring-boot-patterns](spring-boot-patterns/) | Spring Boot best practices |
+| [java-migration](java-migration/) | Java version upgrade guide (8→11→17→21) |
+| [jpa-patterns](jpa-patterns/) | JPA/Hibernate patterns (N+1, lazy loading, transactions) |
+| [logging-patterns](logging-patterns/) | Structured logging (JSON), SLF4J, MDC, AI-friendly formats |
 
 ## Adding a New Skill
 

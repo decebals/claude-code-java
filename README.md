@@ -53,36 +53,36 @@ Skills are automatically loaded by Claude Code based on context.
 ### Workflow
 | Skill | Trigger Examples |
 |-------|------------------|
-| **git-commit** | "commit these changes", "create commit" |
-| **changelog-generator** | "generate changelog", "what changed since release" |
-| **issue-triage** | "triage issues", "check open issues" |
+| [**git-commit**](.claude/skills/git-commit/) | "commit these changes", "create commit" |
+| [**changelog-generator**](.claude/skills/changelog-generator/) | "generate changelog", "what changed since release" |
+| [**issue-triage**](.claude/skills/issue-triage/) | "triage issues", "check open issues" |
 
 ### Code Quality
 | Skill | Trigger Examples |
 |-------|------------------|
-| **java-code-review** | "review this code", "check this PR" |
-| **api-contract-review** | "review API", "check REST endpoints" |
-| **concurrency-review** | "check thread safety", "review async code" |
-| **performance-smell-detection** | "check performance", "find slow code" |
-| **test-quality** | "add tests", "improve coverage" |
-| **maven-dependency-audit** | "check dependencies", "audit deps" |
-| **security-audit** | "security review", "check OWASP", "vulnerabilities" |
+| [**java-code-review**](.claude/skills/java-code-review/) | "review this code", "check this PR" |
+| [**api-contract-review**](.claude/skills/api-contract-review/) | "review API", "check REST endpoints" |
+| [**concurrency-review**](.claude/skills/concurrency-review/) | "check thread safety", "review async code" |
+| [**performance-smell-detection**](.claude/skills/performance-smell-detection/) | "check performance", "find slow code" |
+| [**test-quality**](.claude/skills/test-quality/) | "add tests", "improve coverage" |
+| [**maven-dependency-audit**](.claude/skills/maven-dependency-audit/) | "check dependencies", "audit deps" |
+| [**security-audit**](.claude/skills/security-audit/) | "security review", "check OWASP", "vulnerabilities" |
 
 ### Architecture & Design
 | Skill | Trigger Examples |
 |-------|------------------|
-| **architecture-review** | "review architecture", "check package structure" |
-| **solid-principles** | "check SOLID", "single responsibility" |
-| **design-patterns** | "use factory pattern", "implement strategy" |
-| **clean-code** | "clean this code", "refactor" |
+| [**architecture-review**](.claude/skills/architecture-review/) | "review architecture", "check package structure" |
+| [**solid-principles**](.claude/skills/solid-principles/) | "check SOLID", "single responsibility" |
+| [**design-patterns**](.claude/skills/design-patterns/) | "use factory pattern", "implement strategy" |
+| [**clean-code**](.claude/skills/clean-code/) | "clean this code", "refactor" |
 
 ### Framework & Data
 | Skill | Trigger Examples |
 |-------|------------------|
-| **spring-boot-patterns** | "create controller", "Spring Boot help" |
-| **java-migration** | "upgrade to Java 21", "migrate from Java 8" |
-| **jpa-patterns** | "N+1 problem", "LazyInitializationException" |
-| **logging-patterns** | "add logging", "debug this flow", "analyze logs" |
+| [**spring-boot-patterns**](.claude/skills/spring-boot-patterns/) | "create controller", "Spring Boot help" |
+| [**java-migration**](.claude/skills/java-migration/) | "upgrade to Java 21", "migrate from Java 8" |
+| [**jpa-patterns**](.claude/skills/jpa-patterns/) | "N+1 problem", "LazyInitializationException" |
+| [**logging-patterns**](.claude/skills/logging-patterns/) | "add logging", "debug this flow", "analyze logs" |
 
 See [.claude/skills/README.md](.claude/skills/README.md) for full documentation and [docs/SCRIPTS.md](docs/SCRIPTS.md) for setup script options.
 
