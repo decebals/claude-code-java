@@ -15,7 +15,7 @@ A collection of reusable components for [Claude Code](https://docs.anthropic.com
 ## Purpose
 
 AI-powered development workflows with focus on:
-- **Token efficiency** - Reduce AI token consumption by 30%+
+- **Token efficiency** - Designed for fewer iterations and lower token usage
 - **Reproducible patterns** - Reusable workflows across projects
 - **Java ecosystem** - Tailored for Java/Maven development
 - **Incremental adoption** - Start small, expand as needed
@@ -138,7 +138,7 @@ claude-code-java/
 
 Track these to validate effectiveness:
 
-- **Token reduction**: Target 30%+ vs manual workflows
+- **Token reduction**: Track your improvement vs manual workflows
 - **Time savings**: Measure before/after per task
 - **Reusability**: Number of projects using skills
 - **Quality**: Code review feedback, test coverage
