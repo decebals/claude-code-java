@@ -322,6 +322,59 @@ docs(<skill-name>): improve Z section # Documentation only
 
 ---
 
+## Iterative Improvement
+
+Skills improve through real usage. A skill is never "done" after the first version.
+
+### Signs a Skill Needs Refinement
+
+| Signal | Problem | Solution |
+|--------|---------|----------|
+| Claude asks clarifying questions | Missing context or defaults | Add explicit defaults and examples |
+| You frequently correct the output | Missing constraints | Add "DO NOT" rules or format specs |
+| Output varies too much | Too vague | Add concrete examples of expected output |
+| Works on one project, fails on another | Too narrow | Generalize patterns, add edge cases |
+| Takes many iterations to get right | Missing structure | Add step-by-step workflow |
+
+### Improvement Workflow
+
+1. **Use the skill** on real work
+2. **Note every correction** you make to Claude's output
+3. **Update SKILL.md** with the correction as a rule
+4. **Clear context** and test again
+5. **Repeat 5-6 times** until stable
+
+### Maturity Indicators
+
+A skill is mature when:
+- Works on first try >80% of the time
+- No steering or corrections needed
+- Output is copy-paste ready
+- Works across different projects
+
+### Optional: Track Iterations
+
+Consider adding to your skill folder:
+
+```
+.claude/skills/<skill-name>/
+├── SKILL.md
+├── README.md
+└── CHANGELOG.md   # Optional: track refinements
+```
+
+Example CHANGELOG.md:
+```markdown
+## Iteration History
+- v1: Initial version, too vague
+- v2: Added output format specification
+- v3: Added "avoid" list after common mistakes
+- v4: Added examples for edge cases
+- v5: Stable - tested on 3 projects
+```
+
+---
+
 ## Checklist Summary
 
 Before submitting a new skill:
