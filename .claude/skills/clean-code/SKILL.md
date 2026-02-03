@@ -12,6 +12,7 @@ Write readable, maintainable code following Clean Code principles.
 - Code review focusing on maintainability
 - Reducing complexity
 - Improving naming
+- Simplifying convoluted logic
 
 ---
 
