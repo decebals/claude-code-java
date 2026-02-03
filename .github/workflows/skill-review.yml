@@ -26,11 +26,15 @@ jobs:
           prompt: |
             Review this PR for a new or modified Claude Code skill.
 
-            FIRST: Read these files to understand the validation criteria and existing skills:
-            - docs/SKILL_GUIDELINES.md
-            - .claude/skills/README.md
+            IMPORTANT: Only review files that were actually changed in this PR.
+            Run `gh pr diff ${{ github.event.pull_request.number }}` to see what was modified.
+            Focus ONLY on the changed skill files, not all skills in the repository.
 
-            THEN: Validate the new/modified skill against these criteria:
+            FIRST: Read these files to understand the validation criteria:
+            - docs/SKILL_GUIDELINES.md
+            - .claude/skills/README.md (for existing skills list, to check overlap)
+
+            THEN: For each skill file changed in the PR, validate against these criteria:
 
             ## Structure
             - [ ] SKILL.md exists with frontmatter containing `name` and `description`
