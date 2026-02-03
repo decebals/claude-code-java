@@ -1,0 +1,62 @@
+name: Skill Review
+
+on:
+  pull_request:
+    paths:
+      - '.claude/skills/**'
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          claude_args: |
+            --model claude-haiku-4-5-20250805
+
+          prompt: |
+            Review this PR for a new or modified Claude Code skill.
+
+            FIRST: Read these files to understand the validation criteria and existing skills:
+            - docs/SKILL_GUIDELINES.md
+            - .claude/skills/README.md
+
+            THEN: Validate the new/modified skill against these criteria:
+
+            ## Structure
+            - [ ] SKILL.md exists with frontmatter containing `name` and `description`
+            - [ ] README.md exists with human documentation
+            - [ ] Follows folder convention: `.claude/skills/<skill-name>/`
+
+            ## No Overlap
+            - [ ] Does not significantly overlap with existing skills (check the table in skills/README.md)
+            - [ ] If partial overlap exists, the distinction is clear (different level or type)
+
+            ## Clarity
+            - [ ] Clear level: micro / meso / macro / framework / cross-cutting
+            - [ ] Clear type: audit (review existing code) or template (show how to write)
+
+            ## Quality
+            - [ ] Not anemic - has substantive content
+            - [ ] Actionable checklists (not vague advice)
+            - [ ] Java-specific examples (not generic pseudocode)
+            - [ ] Checklist has <15 items
+
+            ## Output Format
+            Provide a brief summary:
+            1. **Verdict**: APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
+            2. **Overlap Check**: List any existing skills that might overlap and your assessment
+            3. **Issues Found**: Bullet points of what needs to change (if any)
+            4. **Suggestions**: Optional improvements (not blockers)
+
+            Be constructive and specific. If requesting changes, explain exactly what needs to be fixed.
+
+          use_sticky_comment: true
