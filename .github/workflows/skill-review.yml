@@ -21,7 +21,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
           claude_args: |
-            --model claude-haiku-4-5-20250805
+            --model claude-haiku-4-5-20251001
 
           prompt: |
             Review this PR for a new or modified Claude Code skill.
