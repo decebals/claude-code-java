@@ -54,10 +54,20 @@ jobs:
             - Checklist has <15 items
 
             ## Output
-            Post a single PR comment using `gh pr comment` with:
-            1. **Verdict**: APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
-            2. **Changed Files**: List what was reviewed
-            3. **Issues Found**: What needs to change (if any)
-            4. **Suggestions**: Optional improvements
+            Post a concise PR comment using `gh pr comment` with this format:
 
+            ```
+            **Verdict**: APPROVE | REQUEST_CHANGES | NEEDS_DISCUSSION
+
+            **Files reviewed**: [list changed files]
+
+            **Findings**:
+            - Structure: [pass/fail with brief note]
+            - Overlap: [pass/fail - mention related skills if relevant]
+            - Quality: [pass/fail with brief note]
+
+            **Action required**: [if any, otherwise "None - ready to merge"]
+            ```
+
+            Keep it brief and professional. No emojis. Focus on actionable feedback.
             DO NOT explore or review files that were not changed in this PR.
