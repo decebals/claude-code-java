@@ -2,6 +2,7 @@ name: Skill Review
 
 on:
   pull_request:
+    types: [opened, synchronize]
     paths:
       - '.claude/skills/**'
 
@@ -14,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - uses: anthropics/claude-code-action@v1
         with:
@@ -22,46 +25,39 @@ jobs:
 
           claude_args: |
             --model claude-haiku-4-5-20251001
+            --allowedTools "Read,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*)"
 
           prompt: |
-            Review this PR for a new or modified Claude Code skill.
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
-            IMPORTANT: Only review files that were actually changed in this PR.
-            Run `gh pr diff ${{ github.event.pull_request.number }}` to see what was modified.
-            Focus ONLY on the changed skill files, not all skills in the repository.
+            Review ONLY the skill files changed in this PR.
 
-            FIRST: Read these files to understand the validation criteria:
-            - docs/SKILL_GUIDELINES.md
-            - .claude/skills/README.md (for existing skills list, to check overlap)
-
-            THEN: For each skill file changed in the PR, validate against these criteria:
+            STEP 1: Run `gh pr diff ${{ github.event.pull_request.number }}` to see exactly what changed.
+            STEP 2: Read docs/SKILL_GUIDELINES.md to understand validation criteria.
+            STEP 3: Read .claude/skills/README.md to check for overlap with existing skills.
+            STEP 4: Validate ONLY the changed files against these criteria:
 
             ## Structure
-            - [ ] SKILL.md exists with frontmatter containing `name` and `description`
-            - [ ] README.md exists with human documentation
-            - [ ] Follows folder convention: `.claude/skills/<skill-name>/`
+            - SKILL.md has frontmatter with `name` and `description`
+            - README.md exists with human documentation
+            - Follows folder convention: `.claude/skills/<skill-name>/`
 
             ## No Overlap
-            - [ ] Does not significantly overlap with existing skills (check the table in skills/README.md)
-            - [ ] If partial overlap exists, the distinction is clear (different level or type)
-
-            ## Clarity
-            - [ ] Clear level: micro / meso / macro / framework / cross-cutting
-            - [ ] Clear type: audit (review existing code) or template (show how to write)
+            - Does not significantly overlap with existing skills
+            - If partial overlap, distinction is clear (different level or type)
 
             ## Quality
-            - [ ] Not anemic - has substantive content
-            - [ ] Actionable checklists (not vague advice)
-            - [ ] Java-specific examples (not generic pseudocode)
-            - [ ] Checklist has <15 items
+            - Not anemic - has substantive content
+            - Actionable checklists (not vague advice)
+            - Java-specific examples
+            - Checklist has <15 items
 
-            ## Output Format
-            Provide a brief summary:
+            ## Output
+            Post a single PR comment using `gh pr comment` with:
             1. **Verdict**: APPROVE / REQUEST_CHANGES / NEEDS_DISCUSSION
-            2. **Overlap Check**: List any existing skills that might overlap and your assessment
-            3. **Issues Found**: Bullet points of what needs to change (if any)
-            4. **Suggestions**: Optional improvements (not blockers)
+            2. **Changed Files**: List what was reviewed
+            3. **Issues Found**: What needs to change (if any)
+            4. **Suggestions**: Optional improvements
 
-            Be constructive and specific. If requesting changes, explain exactly what needs to be fixed.
-
-          use_sticky_comment: true
+            DO NOT explore or review files that were not changed in this PR.
