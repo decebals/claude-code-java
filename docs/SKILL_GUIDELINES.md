@@ -244,6 +244,16 @@ Before committing:
 - Verify the checklist makes sense
 - Check that recommendations are actionable
 
+### Automated Review
+
+PRs that modify `.claude/skills/` are automatically reviewed against these guidelines.
+The review checks:
+- **Structure**: frontmatter, required files, folder convention
+- **Overlap**: comparison with existing skills
+- **Quality**: actionable content, Java-specific examples, focused scope
+
+This automated check runs before human review to catch common issues early.
+
 ---
 
 ## Anti-Patterns to Avoid
