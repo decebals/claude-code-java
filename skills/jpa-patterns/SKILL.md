@@ -438,6 +438,61 @@ public class Book {
 
 ---
 
+## Primary Key Strategy
+
+### UUIDv7 as Primary Key (recommended for most new entities)
+
+```java
+// ✅ GOOD: UUIDv7 — time-ordered, globally unique, index-friendly
+// Requires Hibernate ORM 6.5+
+@Entity
+public class Order {
+
+    @Id
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+}
+```
+
+Why UUIDv7 over the alternatives:
+
+| Strategy | Pros | Cons |
+|---|---|---|
+| `IDENTITY` / `SEQUENCE` (Long) | Compact, naturally sortable, DB-native | Exposes row count, requires round-trip for ID before insert (IDENTITY), awkward for sharding/merging data across DBs |
+| `UUID` v4 (random) | Globally unique, no round-trip needed, safe to generate client-side | Random order causes B-tree index fragmentation and page splits — bad insert/query performance at scale |
+| **UUID v7** | Globally unique, generatable client-side, **time-ordered** so it behaves like a sequential key for indexing, no round-trip needed, doesn't leak row counts | Slightly larger storage than `Long` (16 bytes); needs Hibernate 6.5+ or a third-party generator on older versions |
+
+UUIDv7 embeds a millisecond timestamp in its high bits, so values generated close together sort close together. This keeps B-tree inserts append-mostly (like an auto-increment `Long`) while retaining the distributed-generation benefits of a UUID — making it a good default for new entities, especially in microservices or systems that merge/replicate data across databases.
+
+### If not on Hibernate 6.5+
+
+```java
+// ✅ GOOD: fall back to a UUIDv7 library and assign before persist
+@Entity
+public class Order {
+
+    @Id
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
+    @PrePersist
+    void assignId() {
+        if (id == null) {
+            id = UuidCreator.getTimeOrderedEpoch(); // e.g. com.github.f4b6a3:uuid-creator
+        }
+    }
+}
+```
+
+### When to still prefer a `Long` sequence
+
+- Very high-throughput, single-database tables where the extra 8 bytes/index size matters
+- Legacy schemas or ORMs/tools that assume numeric, auto-increment keys
+- Natural human-facing sequential IDs (e.g. invoice numbers) — model those as a separate `@NaturalId`/business field, not the PK
+
+---
+
 ## Query Optimization
 
 ### Pagination
@@ -648,6 +703,7 @@ When reviewing JPA code, check:
 - [ ] Indexes on frequently queried columns
 - [ ] No lazy fields in toString()
 - [ ] Read-only transactions where applicable
+- [ ] UUIDv7 (not random UUID v4) used for new entity primary keys where a `Long` sequence isn't required
 
 ---
 
