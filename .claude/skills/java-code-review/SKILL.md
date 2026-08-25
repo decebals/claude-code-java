@@ -1,408 +1,121 @@
 ---
 name: java-code-review
-description: Systematic code review for Java with null safety, exception handling, concurrency, and performance checks. Use when user says "review code", "check this PR", "code review", or before merging changes.
+description: Evidence-driven review of Java changes for correctness, contracts, concurrency, resource safety, and maintainability. Use when the user asks to review Java code or a PR, or when deciding whether Java changes are ready to merge. Repository-local rules take precedence over this generic checklist.
 ---
 
-# Java Code Review Skill
-
-Systematic code review checklist for Java projects.
-
-## When to Use
-- User says "review this code" / "check this PR" / "code review"
-- Before merging a PR
-- After implementing a feature
-
-## Review Strategy
-
-1. **Quick scan** - Understand intent, identify scope
-2. **Checklist pass** - Go through each category below
-3. **Summary** - List findings by severity (Critical → Minor)
-
-## Output Format
-
-```markdown
-## Code Review: [file/feature name]
-
-### Critical
-- [Issue description + line reference + suggestion]
-
-### Improvements
-- [Suggestion + rationale]
-
-### Minor/Style
-- [Nitpicks, optional improvements]
-
-### Good Practices Observed
-- [Positive feedback - important for morale]
-```
-
----
-
-## Review Checklist
-
-### 1. Null Safety
-
-**Check for:**
-```java
-// ❌ NPE risk
-String name = user.getName().toUpperCase();
-
-// ✅ Safe
-String name = Optional.ofNullable(user.getName())
-    .map(String::toUpperCase)
-    .orElse("");
-
-// ✅ Also safe (early return)
-if (user.getName() == null) {
-    return "";
-}
-return user.getName().toUpperCase();
-```
-
-**Flags:**
-- Chained method calls without null checks
-- Missing `@Nullable` / `@NonNull` annotations on public APIs
-- `Optional.get()` without `isPresent()` check
-- Returning `null` from methods that could return `Optional` or empty collection
-
-**Suggest:**
-- Use `Optional` for return types that may be absent
-- Use `Objects.requireNonNull()` for constructor/method params
-- Return empty collections instead of null: `Collections.emptyList()`
-
-### 2. Exception Handling
-
-**Check for:**
-```java
-// ❌ Swallowing exceptions
-try {
-    process();
-} catch (Exception e) {
-    // silently ignored
-}
-
-// ❌ Catching too broad
-catch (Exception e) { }
-catch (Throwable t) { }
-
-// ❌ Losing stack trace
-catch (IOException e) {
-    throw new RuntimeException(e.getMessage());
-}
-
-// ✅ Proper handling
-catch (IOException e) {
-    log.error("Failed to process file: {}", filename, e);
-    throw new ProcessingException("File processing failed", e);
-}
-```
-
-**Flags:**
-- Empty catch blocks
-- Catching `Exception` or `Throwable` broadly
-- Losing original exception (not chaining)
-- Using exceptions for flow control
-- Checked exceptions leaking through API boundaries
-
-**Suggest:**
-- Log with context AND stack trace
-- Use specific exception types
-- Chain exceptions with `cause`
-- Consider custom exceptions for domain errors
-
-### 3. Collections & Streams
-
-**Check for:**
-```java
-// ❌ Modifying while iterating
-for (Item item : items) {
-    if (item.isExpired()) {
-        items.remove(item);  // ConcurrentModificationException
-    }
-}
-
-// ✅ Use removeIf
-items.removeIf(Item::isExpired);
-
-// ❌ Stream for simple operations
-list.stream().forEach(System.out::println);
-
-// ✅ Simple loop is cleaner
-for (Item item : list) {
-    System.out.println(item);
-}
-
-// ❌ Collecting to modify
-List<String> names = users.stream()
-    .map(User::getName)
-    .collect(Collectors.toList());
-names.add("extra");  // Might be immutable!
-
-// ✅ Explicit mutable list
-List<String> names = users.stream()
-    .map(User::getName)
-    .collect(Collectors.toCollection(ArrayList::new));
-```
-
-**Flags:**
-- Modifying collections during iteration
-- Overusing streams for simple operations
-- Assuming `Collectors.toList()` returns mutable list
-- Not using `List.of()`, `Set.of()`, `Map.of()` for immutable collections
-- Parallel streams without understanding implications
-
-**Suggest:**
-- `List.copyOf()` for defensive copies
-- `removeIf()` instead of iterator removal
-- Streams for transformations, loops for side effects
-
-### 4. Concurrency
-
-**Check for:**
-```java
-// ❌ Not thread-safe
-private Map<String, User> cache = new HashMap<>();
-
-// ✅ Thread-safe
-private Map<String, User> cache = new ConcurrentHashMap<>();
-
-// ❌ Check-then-act race condition
-if (!map.containsKey(key)) {
-    map.put(key, computeValue());
-}
-
-// ✅ Atomic operation
-map.computeIfAbsent(key, k -> computeValue());
-
-// ❌ Double-checked locking (broken without volatile)
-if (instance == null) {
-    synchronized(this) {
-        if (instance == null) {
-            instance = new Instance();
-        }
-    }
-}
-```
-
-**Flags:**
-- Shared mutable state without synchronization
-- Check-then-act patterns without atomicity
-- Missing `volatile` on shared variables
-- Synchronized on non-final objects
-- Thread-unsafe lazy initialization
-
-**Suggest:**
-- Prefer immutable objects
-- Use `java.util.concurrent` classes
-- `AtomicReference`, `AtomicInteger` for simple cases
-- Consider `@ThreadSafe` / `@NotThreadSafe` annotations
-
-### 5. Java Idioms
-
-**equals/hashCode:**
-```java
-// ❌ Only equals without hashCode
-@Override
-public boolean equals(Object o) { ... }
-// Missing hashCode!
-
-// ❌ Mutable fields in hashCode
-@Override
-public int hashCode() {
-    return Objects.hash(id, mutableField);  // Breaks HashMap
-}
-
-// ✅ Use immutable fields, implement both
-@Override
-public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof User user)) return false;
-    return Objects.equals(id, user.id);
-}
-
-@Override
-public int hashCode() {
-    return Objects.hash(id);
-}
-```
-
-**toString:**
-```java
-// ❌ Missing - hard to debug
-// No toString()
-
-// ❌ Including sensitive data
-return "User{password='" + password + "'}";
-
-// ✅ Useful for debugging
-@Override
-public String toString() {
-    return "User{id=" + id + ", name='" + name + "'}";
-}
-```
-
-**Builders:**
-```java
-// ✅ For classes with many optional parameters
-User user = User.builder()
-    .name("John")
-    .email("john@example.com")
-    .build();
-```
-
-**Flags:**
-- `equals` without `hashCode`
-- Mutable fields in `hashCode`
-- Missing `toString` on domain objects
-- Constructors with > 3-4 parameters (suggest builder)
-- Not using `instanceof` pattern matching (Java 16+)
-
-### 6. Resource Management
-
-**Check for:**
-```java
-// ❌ Resource leak
-FileInputStream fis = new FileInputStream(file);
-// ... might throw before close
-
-// ✅ Try-with-resources
-try (FileInputStream fis = new FileInputStream(file)) {
-    // ...
-}
-
-// ❌ Multiple resources, wrong order
-try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-    // FileWriter might not be closed if BufferedWriter fails
-}
-
-// ✅ Separate declarations
-try (FileWriter fw = new FileWriter(file);
-     BufferedWriter writer = new BufferedWriter(fw)) {
-    // Both properly closed
-}
-```
-
-**Flags:**
-- Not using try-with-resources for `Closeable`/`AutoCloseable`
-- Resources opened but not in try-with-resources
-- Database connections/statements not properly closed
-
-### 7. API Design
-
-**Check for:**
-```java
-// ❌ Boolean parameters
-process(data, true, false);  // What do these mean?
-
-// ✅ Use enums or builder
-process(data, ProcessMode.ASYNC, ErrorHandling.STRICT);
-
-// ❌ Returning null for "not found"
-public User findById(Long id) {
-    return users.get(id);  // null if not found
-}
-
-// ✅ Return Optional
-public Optional<User> findById(Long id) {
-    return Optional.ofNullable(users.get(id));
-}
-
-// ❌ Accepting null collections
-public void process(List<Item> items) {
-    if (items == null) items = Collections.emptyList();
-}
-
-// ✅ Require non-null, accept empty
-public void process(List<Item> items) {
-    Objects.requireNonNull(items, "items must not be null");
-}
-```
-
-**Flags:**
-- Boolean parameters (prefer enums)
-- Methods with > 3 parameters (consider parameter object)
-- Inconsistent null handling across similar methods
-- Missing validation on public API inputs
-
-### 8. Performance Considerations
-
-**Check for:**
-```java
-// ❌ String concatenation in loop
-String result = "";
-for (String s : strings) {
-    result += s;  // Creates new String each iteration
-}
-
-// ✅ StringBuilder
-StringBuilder sb = new StringBuilder();
-for (String s : strings) {
-    sb.append(s);
-}
-
-// ❌ Regex compilation in loop
-for (String line : lines) {
-    if (line.matches("pattern.*")) { }  // Compiles regex each time
-}
-
-// ✅ Pre-compiled pattern
-private static final Pattern PATTERN = Pattern.compile("pattern.*");
-for (String line : lines) {
-    if (PATTERN.matcher(line).matches()) { }
-}
-
-// ❌ N+1 in loops
-for (User user : users) {
-    List<Order> orders = orderRepo.findByUserId(user.getId());
-}
-
-// ✅ Batch fetch
-Map<Long, List<Order>> ordersByUser = orderRepo.findByUserIds(userIds);
-```
-
-**Flags:**
-- String concatenation in loops
-- Regex compilation in loops
-- N+1 query patterns
-- Creating objects in tight loops that could be reused
-- Not using primitive streams (`IntStream`, `LongStream`)
-
-### 9. Testing Hints
-
-**Suggest tests for:**
-- Null inputs
-- Empty collections
-- Boundary values
-- Exception cases
-- Concurrent access (if applicable)
-
----
-
-## Severity Guidelines
+# Java Code Review
+
+Review the behavior introduced by a change, not just whether individual lines resemble a preferred style. Report only findings that are concrete, actionable, and supported by the diff plus surrounding code.
+
+## Scope and Composition
+
+Use this skill for a general Java review. Add a focused skill when the change is dominated by one of these areas:
+
+- REST compatibility: `api-contract-review`
+- Threading, Reactor, `@Async`, or virtual threads: `concurrency-review`
+- Authentication, authorization, injection, or secrets: `security-audit`
+- Hot paths, database access, allocations, or latency: `performance-smell-detection`
+- JUnit test design: `test-quality`
+- Spring configuration and component behavior: `spring-boot-patterns`
+- JPA/Hibernate: `jpa-patterns`
+- Package/module boundaries: `architecture-review`
+
+Do not repeat the same finding from multiple checklists. Keep the version with the clearest proof and impact.
+
+## Review Workflow
+
+1. Establish the target: requested files or PR, comparison base, intended behavior, Java version, framework, and build tool.
+2. Inspect the diff first, then read enough surrounding code, callers, tests, configuration, migrations, and public contracts to prove or dismiss a concern. Changed lines are the starting point, not a boundary on reasoning.
+3. Read repository instructions and local standards before applying this generic checklist. Existing formatter, static analysis, CI, compatibility rules, and approved project decisions are authoritative.
+4. Trace important paths end to end: input → validation/authorization → state or external call → response/event → observability. Check normal, boundary, failure, retry, cancellation, and concurrent paths as applicable.
+5. Run the narrowest useful automated checks. Prefer targeted tests, then compile/static analysis; expand only when risk justifies it. State exactly what was and was not verified.
+6. Report findings by severity. Do not turn preferences, speculative cleanup, or unrelated legacy debt into findings on the change.
+
+## High-Signal Checklist
+
+### 1. Correctness and State
+
+- Does the change meet the stated behavior on success, empty/boundary input, partial failure, retry, cancellation, and repeated calls?
+- Are state transitions, idempotency, transaction boundaries, and cleanup correct when an operation stops midway?
+- Could ordering, stale state, aliasing, integer overflow, precision, or time-zone behavior change results?
+
+### 2. Nullability and Value Semantics
+
+- Trace nullable data across external input, deserialization, database/client results, collection elements, and unboxing.
+- Flag unsafe dereferences or inconsistent API contracts, not the mere absence of `Optional` or nullability annotations.
+- For `equals`/`hashCode`, records, collection keys, and defensive copies, check whether later mutation can break identity or ownership.
+
+### 3. Exceptions, Responses, and Logging
+
+- Preserve the original cause and classify failures narrowly enough for the required response, retry, rollback, and alert behavior.
+- Reject swallowed failures, misleading fallbacks, duplicate logging, sensitive details in responses/logs, and broad catches that collapse distinct outcomes.
+- Verify exception handlers and reactive error paths at the actual boundary where the failure occurs.
+
+### 4. Collections and Streams
+
+- Check mutation during iteration, duplicate-key behavior, null rejection, ordering assumptions, view-backed collections, and mutable versus unmodifiable results.
+- Use streams only when their evaluation, side effects, and short-circuit behavior remain clear. Review parallel streams as concurrency, not syntax.
+
+### 5. Concurrency and Reactive Execution
+
+- Identify shared mutable state and prove compound operations are atomic; a concurrent collection alone may not protect multi-step invariants.
+- Check publication, lock ordering, blocking calls, scheduler/executor ownership, cancellation, context propagation, and shutdown.
+- Match advice to the configured Java version. Virtual threads and Reactor event loops have different constraints from pooled platform threads.
+
+### 6. Resources and External Calls
+
+- Ensure files, streams, JDBC objects, clients, executors, and subscriptions have explicit ownership and close/cancel on every path.
+- Verify timeouts, bounded retries, backoff, circuit/degradation behavior, and safe handling of downstream 4xx/5xx and malformed payloads.
+
+### 7. API and Compatibility
+
+- Check input validation, authorization at the object/action level, response shape, HTTP/protocol semantics, serialization, and backward compatibility.
+- Treat public signatures, persisted schemas, event formats, prompts, generated bytes, and configuration keys as contracts when consumers depend on them.
+
+### 8. Performance and Capacity
+
+- Look for N+1 I/O, unbounded queries/queues/caches/batches, blocking on event loops, repeated regex or serialization work, and accidental quadratic behavior.
+- Require evidence before claiming a micro-optimization. Prioritize capacity limits and I/O shape over cosmetic allocation advice.
+
+### 9. Security and Privacy
+
+- Verify trusted identity sources, authorization before side effects, parameterized queries, controlled redirects/SSRF targets, request limits, rate limits, and secret handling.
+- Check that logs, metrics, traces, exceptions, fixtures, and `toString` output do not expose credentials or sensitive user/downstream data.
+
+### 10. Tests and Operability
+
+- Tests should prove changed behavior and meaningful failure/boundary paths with deterministic assertions; coverage percentage alone is not evidence.
+- Check configuration defaults, startup behavior, migration/rollback implications, health signals, metrics, and alerts for new failure modes.
+
+## Avoid Mechanical Findings
+
+Do not create a finding solely because code lacks `Optional`, a builder, an interface plus `Impl`, `toString`, a `default` branch, or a stream/loop conversion. Those choices depend on the repository contract, Java version, mutation needs, and actual risk. Formatter or Checkstyle issues are findings only when confirmed by the configured tool or an explicit repository rule.
+
+## Severity
 
 | Severity | Criteria |
-|----------|----------|
-| **Critical** | Security vulnerability, data loss risk, production crash |
-| **High** | Bug likely, significant performance issue, breaks API contract |
-| **Medium** | Code smell, maintainability issue, missing best practice |
-| **Low** | Style, minor optimization, suggestion |
+| --- | --- |
+| Critical | Exploitable security issue, data loss/corruption, or a release-blocking production failure with broad impact |
+| High | Likely functional defect, authorization/contract break, race, resource leak, or major availability/performance regression |
+| Medium | Real edge-case defect, inadequate failure handling/test coverage, or maintainability issue likely to cause future errors |
+| Low | Bounded issue with small impact; never use Low for pure taste or optional cleanup |
 
-## Token Optimization
+## Output
 
-- Focus on changed lines (use `git diff`)
-- Don't repeat obvious issues - group similar findings
-- Reference line numbers, not full code quotes
-- Skip files that are auto-generated or test fixtures
+Lead with findings, highest severity first. Each finding must include:
 
-## Quick Reference Card
+- severity and concise title;
+- file and precise line;
+- the triggering path or evidence;
+- user/production impact;
+- the smallest safe fix and relevant verification.
 
-| Category | Key Checks |
-|----------|------------|
-| Null Safety | Chained calls, Optional misuse, null returns |
-| Exceptions | Empty catch, broad catch, lost stack trace |
-| Collections | Modification during iteration, stream vs loop |
-| Concurrency | Shared mutable state, check-then-act |
-| Idioms | equals/hashCode pair, toString, builders |
-| Resources | try-with-resources, connection leaks |
-| API | Boolean params, null handling, validation |
-| Performance | String concat, regex in loop, N+1 |
+Then list validation performed and residual risks. If no actionable findings remain, say so directly and still disclose tests not run or contracts not verified. Positive observations are optional and must not obscure findings.
+
+## Token Efficiency
+
+- Start from the diff and review high-risk paths first.
+- Group repeated instances under one finding with representative locations.
+- Cite code instead of pasting it.
+- Skip generated artifacts and fixtures unless they are the contract under review.
+- Stop specialist passes early when the change does not touch their risk area.
