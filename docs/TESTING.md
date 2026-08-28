@@ -1,10 +1,11 @@
 # Testing Strategy
 
-> How to test and validate claude-code-java scripts
+> How to test and validate claude-code-java scripts and skills
 
 ## Current Approach: Simple Test Script
 
-For MVP phase, we use a simple bash test script that validates all setup scripts work correctly.
+A bash test script validates that the setup scripts work and that the skills conform to the
+Agent Skills specification. It runs locally and in CI on every push and pull request.
 
 ### Running Tests
 
@@ -19,11 +20,14 @@ For MVP phase, we use a simple bash test script that validates all setup scripts
 | `link-skills.sh` | Creates `.claude/`, symlink points to workspace |
 | `generate-claude-md.sh` | Creates `CLAUDE.md` with content |
 | `configure-mcp.sh` | Template file exists |
+| `configure-settings.sh` | Creates `settings.json` with content |
+| `validate-skills.sh` | Every skill passes the Agent Skills spec checks |
 
 ### Test Philosophy
 
 - Tests run in a temporary directory (auto-cleaned)
-- Zero external dependencies
+- Zero external dependencies. The reference validator `skills-ref` needs Python, so it runs as
+  a separate CI job rather than inside `test-all.sh`
 - Fast execution (< 2 seconds)
 - Clear pass/fail output
 
@@ -49,27 +53,7 @@ For MVP phase, we use a simple bash test script that validates all setup scripts
 
 **Install:** `npm install -g bats` or `brew install bats-core`
 
-### Option 2: GitHub Actions CI
-
-**When to adopt:**
-- Project is public on GitHub
-- Want automatic validation on PRs
-- Multiple contributors
-
-**Example workflow (`.github/workflows/test.yml`):**
-```yaml
-name: Test
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: chmod +x scripts/*.sh
-      - run: ./scripts/test-all.sh
-```
-
-### Option 3: Pre-commit Hook
+### Option 2: Pre-commit Hook
 
 **When to adopt:**
 - Want to catch issues before commit
@@ -86,9 +70,9 @@ jobs:
 
 | Phase | Recommended Approach |
 |-------|---------------------|
-| MVP (now) | Simple test script |
-| v0.3+ with contributors | Add bats-core |
-| Public release | Add GitHub Actions |
+| MVP | Simple test script |
+| Public release | GitHub Actions (adopted, `.github/workflows/test.yml`) |
+| Growth with contributors | Add bats-core |
 | Team adoption | Add pre-commit hooks |
 
 ## Adding New Tests
@@ -99,7 +83,7 @@ When adding a new script, add corresponding tests to `test-all.sh`:
 # Test N: new-script.sh
 echo "Testing new-script.sh..."
 "$SCRIPT_DIR/new-script.sh" "$TEST_DIR" > /dev/null 2>&1
-check "[ -f '$TEST_DIR/expected-output' ]" "expected output created"
+check "[ -f '$TEST_DIR/expected-output']" "expected output created"
 echo ""
 ```
 

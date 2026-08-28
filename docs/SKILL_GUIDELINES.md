@@ -105,16 +105,22 @@ Every skill has two files:
 
 ```
 .claude/skills/<skill-name>/
-├── SKILL.md    # Instructions for Claude (AI reads this)
+├── SKILL.md    # Instructions for the agent (the AI reads this)
 └── README.md   # Documentation for humans
 ```
 
 ### SKILL.md Structure
 
+Frontmatter follows the [Agent Skills specification](https://agentskills.io/specification).
+`name` and `description` are required; `license`, `compatibility`, `metadata` and
+`allowed-tools` are optional; no other top-level field is allowed. `name` must match the
+directory name. Run `./scripts/validate-skills.sh` to check.
+
 ```markdown
 ---
 name: skill-name
 description: One-line description. Use when [triggers].
+license: MIT
 ---
 
 # Skill Name

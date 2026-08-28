@@ -11,6 +11,7 @@
 | `generate-claude-md.sh` | Generates `CLAUDE.md` from template |
 | `configure-mcp.sh` | Generates MCP config and optionally adds servers |
 | `configure-settings.sh` | Copies Claude Code settings with pre-approved commands |
+| `validate-skills.sh` | Validates skills against the Agent Skills specification |
 | `test-all.sh` | Runs all tests to validate scripts work |
 
 ## Usage
@@ -43,6 +44,29 @@ cd /path/to/claude-code-java
 ```bash
 ./scripts/test-all.sh
 ```
+
+### Validate Skills
+
+```bash
+./scripts/validate-skills.sh              # all skills
+./scripts/validate-skills.sh path/to/dir  # a specific skills directory
+```
+
+Errors fail the run, recommendations are reported as warnings.
+
+#### Why two validators
+
+CI runs this script alongside [`skills-ref`](https://pypi.org/project/skills-ref/), the
+reference validator from the spec authors. The two cover different ground, so keep both.
+
+`skills-ref` is the authority on the specification. Tracking its latest release is how this
+repo finds out that the spec has moved, without anyone having to watch for it.
+
+`validate-skills.sh` covers what `skills-ref` does not: the `allowed-tools` format, which the
+spec defines as a space-separated string but the reference implementation accepts as a list or
+comma-separated; this repo's convention that every skill ships a `README.md`; and the length
+recommendations for the body and the description. It also runs with no Python, which matters in
+a repo that is otherwise bash and markdown.
 
 ## Conventions
 

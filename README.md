@@ -1,6 +1,6 @@
 # claude-code-java
 
-> Reusable AI development infrastructure for Java projects, optimized for Claude Code
+> Agent Skills for Java projects, following the open Agent Skills specification
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -8,9 +8,11 @@
 
 ## What is this?
 
-A collection of reusable components for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) - Anthropic's agentic coding tool. The core of this project is a set of **skills** (structured markdown files that provide Claude with domain knowledge and workflows), but it also includes project templates, MCP server configurations, and setup scripts.
+A collection of reusable **skills** (structured markdown files that give an AI agent domain knowledge and workflows), plus project templates, MCP server configurations, and setup scripts.
 
-**Who is this for?** Java developers using Claude Code who want consistent, high-quality AI assistance for common tasks like code reviews, testing, commits, and architecture decisions.
+The skills follow the [Agent Skills specification](https://agentskills.io/specification), an open format read by a growing number of agents. They are developed and tested with [Claude Code](https://docs.anthropic.com/en/docs/claude-code), and every skill is validated against the spec in CI.
+
+**Who is this for?** Java developers who want consistent, high-quality AI assistance for common tasks like code reviews, testing, commits, and architecture decisions.
 
 ## Purpose
 
@@ -145,7 +147,7 @@ Track these to validate effectiveness:
 
 ## Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI installed
+- An agent that reads Agent Skills. Developed and tested with the [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
 - Java 11+ projects (Java 17+ recommended)
 - Git for version control
 - Maven or Gradle build tool
@@ -156,7 +158,7 @@ Track these to validate effectiveness:
 - 18 skills (workflow, code quality, architecture, frameworks)
 - Setup automation scripts
 - Project templates
-- YAML frontmatter for automatic skill detection
+- Agent Skills spec compliance, enforced in CI by `scripts/validate-skills.sh` and the reference validator
 
 ## Used in automated code review
 
