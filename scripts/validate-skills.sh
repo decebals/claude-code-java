@@ -1,0 +1,133 @@
+#!/bin/bash
+# validate-skills.sh - Validate skills against the Agent Skills specification
+# Usage: ./validate-skills.sh [skills-directory]
+#
+# Spec: https://agentskills.io/specification
+# Errors fail the run. Recommendations are reported as warnings only.
+#
+# This runs alongside skills-ref, the reference validator, which CI treats as the
+# authority on the spec itself. Do not delete this script as a duplicate. It covers
+# what skills-ref does not: allowed-tools formatting (a spec rule the reference
+# implementation accepts violations of), this repo's README.md convention, and the
+# line and description length recommendations. It also needs no Python.
+
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
+
+SKILLS_DIR="$(cd "${1:-$WORKSPACE_DIR/.claude/skills}" && pwd)"
+
+# Frontmatter fields the spec allows. Anything else is rejected.
+ALLOWED_FIELDS="name description license compatibility metadata allowed-tools"
+
+ERRORS=0
+WARNINGS=0
+CHECKED=0
+
+fail() { echo "❌ $1"; ERRORS=$((ERRORS + 1)); }
+warn() { echo "⚠️  $1"; WARNINGS=$((WARNINGS + 1)); }
+
+[ ! -d "$SKILLS_DIR" ] && echo "❌ Skills directory not found: $SKILLS_DIR" && exit 1
+
+# Prints the frontmatter block of $1, without the --- delimiters.
+# Requires the closing --- on a line of its own.
+frontmatter() {
+    awk 'NR==1 && $0!="---" { exit } NR==1 { next } $0=="---" { exit } { print }' "$1"
+}
+
+# Prints the value of top-level key $2 in the frontmatter of $1, joining any
+# indented continuation lines. Not a YAML parser, the spec keeps this shallow.
+field() {
+    frontmatter "$1" | awk -v key="$2" '
+        $0 ~ "^"key":" { sub("^"key":[ \t]*", ""); print; found=1; next }
+        found && /^[ \t]+/ { sub(/^[ \t]+/, " "); printf "%s", $0; next }
+        found { exit }
+    '
+}
+
+# Prints the top-level keys present in the frontmatter of $1.
+keys() {
+    frontmatter "$1" | grep -oE '^[A-Za-z][A-Za-z0-9_-]*:' | tr -d ':'
+}
+
+for dir in "$SKILLS_DIR"/*/; do
+    [ -d "$dir" ] || continue
+    name="$(basename "$dir")"
+    skill="$dir/SKILL.md"
+    CHECKED=$((CHECKED + 1))
+
+    if [ ! -f "$skill" ]; then
+        fail "$name: missing SKILL.md"
+        continue
+    fi
+
+    # Repo convention, not part of the spec: every skill documents itself for humans.
+    [ -f "$dir/README.md" ] || fail "$name: missing README.md (repo convention)"
+
+    if [ -z "$(frontmatter "$skill")" ]; then
+        fail "$name: frontmatter must start on line 1 with --- and close with --- on its own line"
+        continue
+    fi
+
+    for key in $(keys "$skill"); do
+        case " $ALLOWED_FIELDS " in
+            *" $key "*) ;;
+            *) fail "$name: unknown frontmatter field '$key', put extra data under 'metadata'" ;;
+        esac
+    done
+
+    fm_name="$(field "$skill" name)"
+    if [ -z "$fm_name" ]; then
+        fail "$name: 'name' is required"
+    else
+        [ "$fm_name" = "$name" ] || fail "$name: name '$fm_name' must match the directory name"
+        [ "${#fm_name}" -le 64 ] || fail "$name: name is ${#fm_name} characters, max 64"
+        echo "$fm_name" | grep -qE '^[a-z0-9]+(-[a-z0-9]+)*$' \
+            || fail "$name: name must be lowercase alphanumeric and single hyphens, no leading or trailing hyphen"
+    fi
+
+    desc="$(field "$skill" description)"
+    if [ -z "$desc" ]; then
+        fail "$name: 'description' is required and must be non-empty"
+    else
+        [ "${#desc}" -le 1024 ] || fail "$name: description is ${#desc} characters, max 1024"
+        [ "${#desc}" -ge 50 ] || warn "$name: description is ${#desc} characters, too short to route on reliably"
+    fi
+
+    compat="$(field "$skill" compatibility)"
+    [ -z "$compat" ] || [ "${#compat}" -le 500 ] \
+        || fail "$name: compatibility is ${#compat} characters, max 500"
+
+    if keys "$skill" | grep -qx "allowed-tools"; then
+        # A YAML list is indented under the key, so it has to be caught on the raw
+        # frontmatter. field() would join the items and hide it.
+        if frontmatter "$skill" | awk '
+            /^allowed-tools:/ { seen = 1; next }
+            seen && /^[ \t]*-/  { print "list"; exit }
+            seen && /^[A-Za-z]/ { exit }
+        ' | grep -q list; then
+            fail "$name: allowed-tools must be a space-separated string, not a list"
+        else
+            tools="$(field "$skill" allowed-tools)"
+            case "$tools" in
+                "")  fail "$name: allowed-tools must be a non-empty space-separated string" ;;
+                *,*) fail "$name: allowed-tools must be space-separated, not comma-separated" ;;
+            esac
+        fi
+    fi
+
+    # strictyaml, used by the reference parser, rejects JSON-style flow mappings.
+    frontmatter "$skill" | grep -qE '^metadata:[ \t]*\{' \
+        && fail "$name: metadata must be a nested block, not inline JSON"
+
+    lines="$(wc -l < "$skill")"
+    [ "$lines" -le 500 ] || warn "$name: SKILL.md is $lines lines, the spec recommends under 500"
+done
+
+echo ""
+echo "Checked $CHECKED skills in $SKILLS_DIR"
+echo "$ERRORS error(s), $WARNINGS warning(s)"
+
+[ "$ERRORS" -eq 0 ] || exit 1
+echo "✅ All skills conform to the Agent Skills specification"
