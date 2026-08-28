@@ -69,7 +69,10 @@ Validate your skill idea against existing skills:
 3. Create `README.md` with human documentation (use existing READMEs as template)
 4. Update this table
 5. Update main README.md
-6. Run `./scripts/validate-skills.sh`
+6. Add at least one case to `evals/routing.tsv`
+7. Run `./scripts/validate-skills.sh`
+8. Run `./scripts/eval-routing.sh`. A new skill competes with the existing ones for the
+   same prompts, so check the whole set, not only the new case.
 
 ## Usage
 
