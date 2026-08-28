@@ -99,6 +99,11 @@ for dir in "$SKILLS_DIR"/*/; do
             || fail "$name: name must be lowercase alphanumeric and single hyphens, no leading or trailing hyphen"
     fi
 
+    # An unquoted YAML scalar cannot contain ": ". The reference parser rejects the
+    # whole file, and the failure looks like a parse error rather than a typo.
+    frontmatter "$skill" | grep -qE '^[A-Za-z][A-Za-z0-9_-]*:[ \t]+[^"'"'"'].*: ' \
+        && fail "$name: a frontmatter value contains \": \", which breaks YAML unless quoted"
+
     desc="$(field "$skill" description)"
     if [ -z "$desc" ]; then
         fail "$name: 'description' is required and must be non-empty"
