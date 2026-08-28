@@ -425,6 +425,8 @@ Before submitting a new skill:
 - [ ] Identified clear level (micro/meso/macro/framework/cross)
 - [ ] Determined type (audit vs template)
 - [ ] Documented unique value added
+- [ ] Description names its boundary with the nearest skills
+- [ ] Case added to `evals/routing.tsv`, and the full routing check rerun
 - [ ] SKILL.md follows structure convention
 - [ ] README.md provides human-friendly docs
 - [ ] All examples are Java-specific
