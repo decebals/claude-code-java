@@ -38,10 +38,9 @@ jobs:
             STEP 3: Read .claude/skills/README.md to check for overlap with existing skills.
             STEP 4: Validate ONLY the changed files against these criteria:
 
-            ## Structure
-            - SKILL.md has frontmatter with `name` and `description`
-            - README.md exists with human documentation
-            - Follows folder convention: `.claude/skills/<skill-name>/`
+            Structure and spec conformance are already checked by
+            scripts/validate-skills.sh and skills-ref in the Test workflow.
+            Do not repeat those checks. Review content only.
 
             ## No Overlap
             - Does not significantly overlap with existing skills
@@ -62,7 +61,6 @@ jobs:
             **Files reviewed**: [list changed files]
 
             **Findings**:
-            - Structure: [pass/fail with brief note]
             - Overlap: [pass/fail - mention related skills if relevant]
             - Quality: [pass/fail with brief note]
 
