@@ -12,6 +12,7 @@
 | `configure-mcp.sh` | Generates MCP config and optionally adds servers |
 | `configure-settings.sh` | Copies Claude Code settings with pre-approved commands |
 | `validate-skills.sh` | Validates skills against the Agent Skills specification |
+| `eval-routing.sh` | Checks that a prompt reaches the skill it should |
 | `test-all.sh` | Runs all tests to validate scripts work |
 
 ## Usage
@@ -71,6 +72,31 @@ spec defines as a space-separated string but the reference implementation accept
 comma-separated; this repo's convention that every skill ships a `README.md`; and the length
 recommendations for the body and the description. It also runs with no Python, which matters in
 a repo that is otherwise bash and markdown.
+
+### Check Routing
+
+```bash
+./scripts/eval-routing.sh
+```
+
+An agent choosing between skills sees their names and descriptions, nothing else. With
+eighteen of them the descriptions start competing, and the failure is quiet: the wrong
+skill loads and answers plausibly. This runs the cases in `evals/routing.tsv` against the
+same `<available_skills>` block an agent gets, and reports where a prompt lands somewhere
+other than expected.
+
+The key is read from `ANTHROPIC_API_KEY` or from `~/.config/anthropic/api-key`.
+
+Every skill should have at least one case. Cases marked `AMBIGUOUS` have no agreed answer
+and are there to record prompts that are underspecified rather than to be fixed.
+
+This is deliberately not a pull request check. Fork pull requests do not get repository
+secrets, so it would fail for every outside contributor, and a model's answer can vary
+between runs. Run it before a release, or after changing a description.
+
+It does not measure output quality. For that the standard defines `evals/evals.json` per
+skill, run with and without the skill to get a baseline. See
+[the specification's guidance](https://agentskills.io/skill-creation/evaluating-skills).
 
 ## Conventions
 
