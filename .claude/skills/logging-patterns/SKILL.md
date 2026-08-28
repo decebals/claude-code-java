@@ -1,6 +1,7 @@
 ---
 name: logging-patterns
 description: Java logging best practices with SLF4J, structured logging (JSON), and MDC for request tracing. Includes AI-friendly log formats for Claude Code debugging. Use when user asks about logging, debugging application flow, or analyzing logs.
+license: MIT
 ---
 
 # Logging Patterns Skill

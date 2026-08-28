@@ -1,6 +1,7 @@
 ---
 name: changelog-generator
 description: Generate changelogs from git commits. Use when user says "generate changelog", "update changelog", "what changed since last release", or before preparing a new release.
+license: MIT
 ---
 
 # Changelog Generator Skill

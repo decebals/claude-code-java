@@ -1,6 +1,7 @@
 ---
 name: java-code-review
 description: Systematic code review for Java with null safety, exception handling, concurrency, and performance checks. Use when user says "review code", "check this PR", "code review", or before merging changes.
+license: MIT
 ---
 
 # Java Code Review Skill
