@@ -183,6 +183,7 @@ See [docs/](docs/) for detailed guides:
 - [SAFE_WORKFLOWS.md](docs/SAFE_WORKFLOWS.md) - Recommended workflows
 - [RED_FLAGS.md](docs/RED_FLAGS.md) - Warning signs to watch for
 - [SKILL_GUIDELINES.md](docs/SKILL_GUIDELINES.md) - How to create new skills
+- [RELEASING.md](docs/RELEASING.md) - Versioning and how a release is cut
 
 ## License
 
