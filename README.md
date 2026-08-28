@@ -3,6 +3,7 @@
 > Agent Skills for Java projects, following the open Agent Skills specification
 
 [![Test](https://github.com/decebals/claude-code-java/actions/workflows/test.yml/badge.svg)](https://github.com/decebals/claude-code-java/actions/workflows/test.yml)
+[![Release](https://img.shields.io/github/v/release/decebals/claude-code-java)](https://github.com/decebals/claude-code-java/releases/latest)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-spec%20compliant-blue)](https://agentskills.io/specification)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
