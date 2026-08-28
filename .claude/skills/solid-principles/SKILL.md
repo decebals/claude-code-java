@@ -1,6 +1,7 @@
 ---
 name: solid-principles
 description: SOLID principles checklist with Java examples. Use when reviewing classes, refactoring code, or when user asks about Single Responsibility, Open/Closed, Liskov, Interface Segregation, or Dependency Inversion.
+license: MIT
 ---
 
 # SOLID Principles Skill

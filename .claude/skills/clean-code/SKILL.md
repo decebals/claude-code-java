@@ -1,6 +1,7 @@
 ---
 name: clean-code
 description: Clean Code principles (DRY, KISS, YAGNI), naming conventions, function design, and refactoring. Use when user says "clean this code", "refactor", "improve readability", or when reviewing code quality.
+license: MIT
 ---
 
 # Clean Code Skill

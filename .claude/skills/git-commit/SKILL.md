@@ -1,6 +1,7 @@
 ---
 name: git-commit
 description: Generate conventional commit messages for Java projects. Use when user says "commit", "create commit", "commit changes", or after completing code changes that need to be committed.
+license: MIT
 ---
 
 # Git Commit Message Skill

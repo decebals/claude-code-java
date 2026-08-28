@@ -1,6 +1,7 @@
 ---
 name: architecture-review
 description: Analyze Java project architecture at macro level - package structure, module boundaries, dependency direction, and layering. Use when user asks "review architecture", "check structure", "package organization", or when evaluating if a codebase follows clean architecture principles.
+license: MIT
 ---
 
 # Architecture Review Skill
