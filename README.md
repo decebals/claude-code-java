@@ -169,6 +169,17 @@ These skills are not just for code generation — they are also used as the **si
 
 Same skills. From generation to review. See [`skill-review-sandbox`](https://github.com/decebals/skill-review-sandbox) for a working example.
 
+## Routing is tested
+
+An agent picks a skill from its name and description and nothing else, so with eighteen of
+them the descriptions compete, and the failure is quiet: the wrong skill loads and answers
+plausibly anyway.
+
+`scripts/eval-routing.sh` runs a set of prompts against the same list an agent receives and
+reports where one lands somewhere other than expected. Every skill has at least one case,
+enforced by `scripts/validate-skills.sh`. It runs against any OpenAI-compatible endpoint,
+including a local model.
+
 ## Contributing
 
 Skills are evolving based on real-world usage. Try them, open issues, share what works.
