@@ -64,7 +64,7 @@ Validate your skill idea against existing skills:
 
 ### Implementation Steps
 
-1. Create folder: `.claude/skills/<skill-name>/`. The folder name must be lowercase alphanumeric with single hyphens, and the `name` in the frontmatter must match it.
+1. Create folder: `skills/<skill-name>/`. The folder name must be lowercase alphanumeric with single hyphens, and the `name` in the frontmatter must match it.
 2. Create `SKILL.md` with instructions for the agent. Required frontmatter is `name` and `description`; `license`, `compatibility`, `metadata` and `allowed-tools` are optional and no other top-level field is allowed.
 3. Create `README.md` with human documentation (use existing READMEs as template)
 4. Update this table

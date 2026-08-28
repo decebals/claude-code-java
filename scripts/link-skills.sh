@@ -21,7 +21,7 @@ success() { echo -e "${GREEN}✅ $1${NC}"; }
 info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
 
 # Check dirs
-[ ! -d "$WORKSPACE_DIR/.claude/skills" ] && error "Skills not found at $WORKSPACE_DIR/.claude/skills"
+[ ! -d "$WORKSPACE_DIR/skills" ] && error "Skills not found at $WORKSPACE_DIR/skills"
 [ ! -d "$PROJECT_DIR" ] && error "Project dir not found: $PROJECT_DIR"
 
 # Create .claude if missing
@@ -33,7 +33,7 @@ if [ -L "$PROJECT_DIR/.claude/skills" ]; then
 elif [ -d "$PROJECT_DIR/.claude/skills" ]; then
     echo -e "${YELLOW}⚠️  .claude/skills exists but is not a symlink. Backup/remove manually.${NC}"
 else
-    ln -sf "$WORKSPACE_DIR/.claude/skills" "$PROJECT_DIR/.claude/skills"
+    ln -sf "$WORKSPACE_DIR/skills" "$PROJECT_DIR/.claude/skills"
     success "Linked skills to project"
 fi
 

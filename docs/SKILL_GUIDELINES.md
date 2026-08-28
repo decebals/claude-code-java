@@ -104,7 +104,7 @@ A skill should be completable in one session. Signs it's too broad:
 Every skill has two files:
 
 ```
-.claude/skills/<skill-name>/
+skills/<skill-name>/
 ├── SKILL.md    # Instructions for the agent (the AI reads this)
 └── README.md   # Documentation for humans
 ```
@@ -252,7 +252,7 @@ Before committing:
 
 ### Automated Review
 
-PRs that modify `.claude/skills/` are automatically reviewed against these guidelines.
+PRs that modify `skills/` are automatically reviewed against these guidelines.
 The review checks:
 - **Structure**: frontmatter, required files, folder convention
 - **Overlap**: comparison with existing skills
@@ -373,7 +373,7 @@ A skill is mature when:
 Consider adding to your skill folder:
 
 ```
-.claude/skills/<skill-name>/
+skills/<skill-name>/
 ├── SKILL.md
 ├── README.md
 └── CHANGELOG.md   # Optional: track refinements

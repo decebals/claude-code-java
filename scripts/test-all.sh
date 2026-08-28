@@ -35,7 +35,7 @@ echo "Testing link-skills.sh..."
 check ".claude directory created" [ -d "$TEST_DIR/.claude" ]
 check "skills symlink created" [ -L "$TEST_DIR/.claude/skills" ]
 LINK_TARGET=$(readlink "$TEST_DIR/.claude/skills" 2>/dev/null || echo "")
-check "symlink points to workspace" [ "$LINK_TARGET" = "$WORKSPACE_DIR/.claude/skills" ]
+check "symlink points to workspace" [ "$LINK_TARGET" = "$WORKSPACE_DIR/skills" ]
 echo ""
 
 # Test 2: generate-claude-md.sh

@@ -33,7 +33,7 @@ jobs:
       - name: Validate every skill
         run: |
           fail=0
-          for d in .claude/skills/*/; do
+          for d in skills/*/; do
             if ! out=$(agentskills validate "$d" 2>&1); then
               fail=1
               echo "::error file=${d}SKILL.md::$(echo "$out" | tr '\n' ' ')"
@@ -41,5 +41,5 @@ jobs:
               echo "$out" | sed 's/^/    /'
             fi
           done
-          echo "Validated $(ls -d .claude/skills/*/ | wc -l) skills."
+          echo "Validated $(ls -d skills/*/ | wc -l) skills."
           exit $fail
