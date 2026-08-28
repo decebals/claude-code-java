@@ -1,0 +1,42 @@
+name: Test
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  scripts:
+    name: Setup scripts and skill conventions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: chmod +x scripts/*.sh
+      - run: ./scripts/test-all.sh
+
+  spec:
+    name: Agent Skills spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      # Deliberately unpinned. skills-ref is the reference validator, and tracking its
+      # latest release is how this repo finds out that the spec moved. A failure here
+      # after an upstream release is information, not a broken build.
+      # The package is skills-ref, the command it installs is agentskills.
+      - run: pip install skills-ref
+      - name: Validate every skill
+        run: |
+          fail=0
+          for d in .claude/skills/*/; do
+            if ! out=$(agentskills validate "$d" 2>&1); then
+              fail=1
+              echo "::error file=${d}SKILL.md::$(echo "$out" | tr '\n' ' ')"
+              echo "FAIL $d"
+              echo "$out" | sed 's/^/    /'
+            fi
+          done
+          echo "Validated $(ls -d .claude/skills/*/ | wc -l) skills."
+          exit $fail
