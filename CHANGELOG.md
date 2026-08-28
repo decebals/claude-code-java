@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#8]: `plugin.json`, declaring this repository as an [Agent Plugin](https://agent-plugins.org/).
 - `scripts/eval-routing.sh` and `evals/routing.tsv`, checking that a prompt reaches the
   skill it should. Routing happens on descriptions alone, and with eighteen skills they
-  had started to compete.
+  had started to compete. Works with any OpenAI-compatible endpoint, including a local
+  one, and calls Anthropic directly when none is configured.
 - `validate-skills.sh` rejects a frontmatter value containing an unquoted `": "`, which
   breaks YAML parsing and shows up as an unhelpful parse error.
 - `validate-skills.sh` requires every skill to have a routing case, so the case file cannot
