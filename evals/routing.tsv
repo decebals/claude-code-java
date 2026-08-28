@@ -1,0 +1,24 @@
+# One line per case: prompt <TAB> expected skill.
+# Cases marked AMBIGUOUS have no single right answer today; they exist to prove it.
+review this pull request before I merge	java-code-review
+my repository fires 200 queries for one page	jpa-patterns
+how should I structure a Spring Boot controller	spring-boot-patterns
+are my REST endpoints still backwards compatible	api-contract-review
+this class does too much, split it	solid-principles
+this method is 300 lines and unreadable	clean-code
+my @Async method is not running in parallel	concurrency-review
+we allocate in a hot loop and box everything	performance-smell-detection
+upgrade this project from Java 17 to 21	java-migration
+add tests for this service	test-quality
+commit these changes	git-commit
+any known CVEs in our dependencies	maven-dependency-audit
+is this query open to SQL injection	security-audit
+add MDC so I can trace a request across services	logging-patterns
+which pattern fits pluggable strategies	design-patterns
+are my packages layered correctly	architecture-review
+triage the open issues	issue-triage
+what changed since the last release	changelog-generator
+my Spring Boot app throws LazyInitializationException	jpa-patterns
+these variable names are cryptic, rename them	clean-code
+refactor this class	AMBIGUOUS
+review this code	AMBIGUOUS
