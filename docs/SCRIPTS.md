@@ -91,7 +91,21 @@ skill loads and answers plausibly. This runs the cases in `evals/routing.tsv` ag
 same `<available_skills>` block an agent gets, and reports where a prompt lands somewhere
 other than expected.
 
-The key is read from `ANTHROPIC_API_KEY` or from `~/.config/anthropic/api-key`.
+Any model will do. Set `EVAL_BASE_URL` to use an OpenAI-compatible endpoint, which most
+providers and local runtimes speak:
+
+```bash
+EVAL_BASE_URL=https://api.openai.com/v1     EVAL_MODEL=gpt-4o-mini  EVAL_API_KEY=...
+EVAL_BASE_URL=http://localhost:11434/v1     EVAL_MODEL=llama3.1     EVAL_API_KEY=ollama
+EVAL_BASE_URL=https://openrouter.ai/api/v1  EVAL_MODEL=...          EVAL_API_KEY=...
+```
+
+With no `EVAL_BASE_URL` it calls Anthropic directly and reads the key from
+`ANTHROPIC_API_KEY`, `ANTHROPIC_API_KEY_FILE`, or `~/.config/anthropic/api-key`. Prefer a
+file, so the key stays out of shell history.
+
+The model is named in the summary line, because a result only means something next to the
+model that produced it.
 
 Every skill should have at least one case. Cases marked `AMBIGUOUS` have no agreed answer
 and are there to record prompts that are underspecified rather than to be fixed.
