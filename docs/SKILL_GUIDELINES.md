@@ -88,7 +88,33 @@ The skill should add something NEW:
 - "Other tools have this" (without validating the gap)
 - "I want to reorganize existing content"
 
-### 5. Is It Focused Enough?
+### 5. Will It Be Reached?
+
+The `description` is not a label. It is the whole of what an agent sees when it decides
+which skill to load, alongside the name. Nothing else in `SKILL.md` takes part in that
+decision, so a skill with excellent content and a vague description is a skill that never
+runs, and a skill with a greedy description steals prompts from its neighbours.
+
+Two rules follow.
+
+**Say where you stop.** A description should name the boundary with the skills nearest to
+it and point at them. `performance-smell-detection` does this:
+
+> ... Provides awareness, not absolutes - always measure before optimizing. For
+> JPA/database performance, use jpa-patterns instead.
+
+Without that sentence, prompts about slow queries split unpredictably between two skills.
+
+**Describe symptoms, not the subject.** Users write what is wrong, not what the topic is
+called. "This class does too much" reaches `solid-principles` because the description
+mentions a class with too many responsibilities. It would not reach a description that only
+listed the five principles by name.
+
+Adding a skill changes routing for every other skill, because they all compete for the same
+prompts. Add a case to `evals/routing.tsv` and run `./scripts/eval-routing.sh` over the
+whole set, not just the new case.
+
+### 6. Is It Focused Enough?
 
 A skill should be completable in one session. Signs it's too broad:
 - More than 10-15 checklist items
