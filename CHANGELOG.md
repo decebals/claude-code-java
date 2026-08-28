@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- [#8]: `plugin.json`, declaring this repository as an [Agent Plugin](https://agent-plugins.org/).
+- [#8]: `validate-skills.sh` checks that the `.claude/skills` compatibility path still
+  resolves to `skills/`, and that `plugin.json` and `CHANGELOG.md` agree on the version.
+
+### Changed
+
+- [#8]: Skills moved from `.claude/skills/` to `skills/`, which is where the Agent Plugins
+  standard expects them. `.claude/skills` remains as a symlink, so existing links and the
+  paths in our own documentation keep working. On a checkout without symlink support,
+  Windows without developer mode being the usual case, use `skills/` directly.
+
 ## [1.0.0] - 2026-08-28
 
 First tagged release. Within a major version, skill names and directory layout stay
@@ -15,7 +28,7 @@ put, which is what copying or symlinking a skill folder depends on.
 ### Added
 
 - 18 skills covering workflow, code quality, architecture and frameworks. The
-  [skills README](.claude/skills/README.md) lists them.
+  [skills README](skills/README.md) lists them.
 - Setup scripts: `setup-project.sh`, `link-skills.sh`, `generate-claude-md.sh`,
   `configure-mcp.sh`, `configure-settings.sh`, `test-all.sh`.
 - Templates for `CLAUDE.md`, MCP configuration and Claude Code settings.
@@ -41,5 +54,6 @@ put, which is what copying or symlinking a skill folder depends on.
   it produced a test that always reported the wrong result.
 
 [#5]: https://github.com/decebals/claude-code-java/issues/5
+[#8]: https://github.com/decebals/claude-code-java/issues/8
 [Unreleased]: https://github.com/decebals/claude-code-java/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/decebals/claude-code-java/releases/tag/v1.0.0
