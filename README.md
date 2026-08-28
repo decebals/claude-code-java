@@ -17,6 +17,22 @@ The skills follow the [Agent Skills specification](https://agentskills.io/specif
 
 **Who is this for?** Java developers who want consistent, high-quality AI assistance for common tasks like code reviews, testing, commits, and architecture decisions.
 
+## Routing is tested
+
+An agent picks a skill from its name and description and nothing else. With eighteen of
+them the descriptions compete, and the failure is quiet: the wrong skill loads and answers
+plausibly anyway, so nobody notices.
+
+`scripts/eval-routing.sh` runs a set of prompts against the same list an agent receives and
+reports where one lands somewhere other than expected. It found a real defect the first
+time it ran: "this class does too much, split it" reached `clean-code` rather than
+`solid-principles`. Sharpening three descriptions took the set from 17 of 18 prompts routed
+correctly to 20 of 20.
+
+Every skill has at least one case, enforced by `scripts/validate-skills.sh` so the cases
+cannot fall behind the skills. The check runs against any OpenAI-compatible endpoint,
+including a local model. See [docs/SCRIPTS.md](docs/SCRIPTS.md#check-routing).
+
 ## Purpose
 
 AI-powered development workflows with focus on:
@@ -168,17 +184,6 @@ Track these to validate effectiveness:
 These skills are not just for code generation — they are also used as the **single source of truth** for automated code review via [`skill-review`](https://github.com/decebals/skill-review), a reusable GitHub Actions workflow that evaluates pull requests against the same skills that Claude Code uses during development.
 
 Same skills. From generation to review. See [`skill-review-sandbox`](https://github.com/decebals/skill-review-sandbox) for a working example.
-
-## Routing is tested
-
-An agent picks a skill from its name and description and nothing else, so with eighteen of
-them the descriptions compete, and the failure is quiet: the wrong skill loads and answers
-plausibly anyway.
-
-`scripts/eval-routing.sh` runs a set of prompts against the same list an agent receives and
-reports where one lands somewhere other than expected. Every skill has at least one case,
-enforced by `scripts/validate-skills.sh`. It runs against any OpenAI-compatible endpoint,
-including a local model.
 
 ## Contributing
 
