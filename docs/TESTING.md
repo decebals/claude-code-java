@@ -83,7 +83,7 @@ When adding a new script, add corresponding tests to `test-all.sh`:
 # Test N: new-script.sh
 echo "Testing new-script.sh..."
 "$SCRIPT_DIR/new-script.sh" "$TEST_DIR" > /dev/null 2>&1
-check "[ -f '$TEST_DIR/expected-output']" "expected output created"
+check "expected output created" [ -f "$TEST_DIR/expected-output" ]
 echo ""
 ```
 
