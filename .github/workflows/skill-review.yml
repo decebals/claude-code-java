@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - '.claude/skills/**'
+      - 'skills/**'
 
 jobs:
   review:
@@ -35,7 +35,7 @@ jobs:
 
             STEP 1: Run `gh pr diff ${{ github.event.pull_request.number }}` to see exactly what changed.
             STEP 2: Read docs/SKILL_GUIDELINES.md to understand validation criteria.
-            STEP 3: Read .claude/skills/README.md to check for overlap with existing skills.
+            STEP 3: Read skills/README.md to check for overlap with existing skills.
             STEP 4: Validate ONLY the changed files against these criteria:
 
             Structure and spec conformance are already checked by
