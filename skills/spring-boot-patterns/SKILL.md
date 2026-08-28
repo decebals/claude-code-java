@@ -1,6 +1,6 @@
 ---
 name: spring-boot-patterns
-description: Spring Boot best practices and patterns. Use when creating controllers, services, repositories, or when user asks about Spring Boot architecture, REST APIs, exception handling, or JPA patterns.
+description: Spring Boot best practices and patterns. Use when creating controllers, services or repositories, or when the user asks about Spring Boot layering, wiring, configuration or exception handling. For JPA and Hibernate behaviour, use jpa-patterns instead.
 license: MIT
 ---
 
