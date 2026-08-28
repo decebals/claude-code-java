@@ -57,6 +57,11 @@ check "settings.json created" [ -f "$TEST_DIR/.claude/settings.json" ]
 check "settings.json has content" [ -s "$TEST_DIR/.claude/settings.json" ]
 echo ""
 
+# Test 5: validate-skills.sh
+echo "Testing validate-skills.sh..."
+check "all skills pass validation" "$SCRIPT_DIR/validate-skills.sh"
+echo ""
+
 # Summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Results: $PASS passed, $FAIL failed"
