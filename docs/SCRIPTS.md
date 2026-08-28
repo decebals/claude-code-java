@@ -54,6 +54,10 @@ cd /path/to/claude-code-java
 
 Errors fail the run, recommendations are reported as warnings.
 
+Beyond the spec, it checks two things specific to this repository: that the `.claude/skills`
+compatibility symlink still resolves to `skills/`, which a checkout without symlink support
+silently breaks, and that `plugin.json` and `CHANGELOG.md` carry the same version.
+
 #### Why two validators
 
 CI runs this script alongside [`skills-ref`](https://pypi.org/project/skills-ref/), the

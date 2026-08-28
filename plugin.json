@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "java-agent-skills",
+  "version": "1.0.0",
+  "description": "Agent Skills for Java development: code review, testing, architecture, Spring Boot, JPA, concurrency, security and release workflows.",
+  "author": {
+    "name": "Decebal Suiu",
+    "url": "https://github.com/decebals"
+  },
+  "homepage": "https://github.com/decebals/claude-code-java",
+  "repository": "https://github.com/decebals/claude-code-java",
+  "license": "MIT",
+  "keywords": ["agent-skills", "java", "maven", "spring-boot", "jpa", "code-review", "testing"]
+}

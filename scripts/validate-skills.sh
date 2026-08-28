@@ -16,7 +16,7 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_DIR="$(dirname "$SCRIPT_DIR")"
 
-SKILLS_DIR="$(cd "${1:-$WORKSPACE_DIR/.claude/skills}" && pwd)"
+SKILLS_DIR="$(cd "${1:-$WORKSPACE_DIR/skills}" && pwd)"
 
 # Frontmatter fields the spec allows. Anything else is rejected.
 ALLOWED_FIELDS="name description license compatibility metadata allowed-tools"
@@ -29,6 +29,18 @@ fail() { echo "❌ $1"; ERRORS=$((ERRORS + 1)); }
 warn() { echo "⚠️  $1"; WARNINGS=$((WARNINGS + 1)); }
 
 [ ! -d "$SKILLS_DIR" ] && echo "❌ Skills directory not found: $SKILLS_DIR" && exit 1
+
+# The canonical location is skills/. .claude/skills is a symlink kept for anyone who
+# linked or copied the old path. A checkout without symlink support turns it into a text
+# file, and the failure is silent, so check that it still resolves to the same place.
+COMPAT_LINK="$WORKSPACE_DIR/.claude/skills"
+if [ -e "$COMPAT_LINK" ] || [ -L "$COMPAT_LINK" ]; then
+    if [ ! -d "$COMPAT_LINK" ]; then
+        fail "compatibility path .claude/skills does not resolve to a directory"
+    elif [ "$(cd "$COMPAT_LINK" && pwd -P)" != "$(cd "$WORKSPACE_DIR/skills" && pwd -P)" ]; then
+        fail "compatibility path .claude/skills resolves somewhere other than skills/"
+    fi
+fi
 
 # Prints the frontmatter block of $1, without the --- delimiters.
 # Requires the closing --- on a line of its own.
@@ -124,6 +136,18 @@ for dir in "$SKILLS_DIR"/*/; do
     lines="$(wc -l < "$skill")"
     [ "$lines" -le 500 ] || warn "$name: SKILL.md is $lines lines, the spec recommends under 500"
 done
+
+# One version, two files that must agree. plugin.json is the anchor; the changelog's
+# top released heading has to match it, so a release cannot half-happen.
+MANIFEST="$WORKSPACE_DIR/plugin.json"
+CHANGELOG="$WORKSPACE_DIR/CHANGELOG.md"
+if [ -f "$MANIFEST" ] && [ -f "$CHANGELOG" ]; then
+    manifest_version="$(grep -oE '"version"[ ]*:[ ]*"[^"]+"' "$MANIFEST" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+    changelog_version="$(grep -m1 -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' "$CHANGELOG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')"
+    if [ "$manifest_version" != "$changelog_version" ]; then
+        fail "plugin.json says $manifest_version, CHANGELOG.md says $changelog_version"
+    fi
+fi
 
 echo ""
 echo "Checked $CHECKED skills in $SKILLS_DIR"
