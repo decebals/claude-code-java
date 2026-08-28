@@ -10,11 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - [#8]: `plugin.json`, declaring this repository as an [Agent Plugin](https://agent-plugins.org/).
+- `scripts/eval-routing.sh` and `evals/routing.tsv`, checking that a prompt reaches the
+  skill it should. Routing happens on descriptions alone, and with eighteen skills they
+  had started to compete.
+- `validate-skills.sh` rejects a frontmatter value containing an unquoted `": "`, which
+  breaks YAML parsing and shows up as an unhelpful parse error.
 - [#8]: `validate-skills.sh` checks that the `.claude/skills` compatibility path still
   resolves to `skills/`, and that `plugin.json` and `CHANGELOG.md` agree on the version.
 
 ### Changed
 
+- Sharpened the descriptions of `clean-code`, `solid-principles` and
+  `spring-boot-patterns`, which overlapped enough to send prompts to the wrong skill.
+  Each now says where it stops and which skill takes over.
 - [#8]: Skills moved from `.claude/skills/` to `skills/`, which is where the Agent Plugins
   standard expects them. `.claude/skills` remains as a symlink, so existing links and the
   paths in our own documentation keep working. On a checkout without symlink support,
