@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   had started to compete.
 - `validate-skills.sh` rejects a frontmatter value containing an unquoted `": "`, which
   breaks YAML parsing and shows up as an unhelpful parse error.
+- `validate-skills.sh` requires every skill to have a routing case, so the case file cannot
+  fall behind the skill set.
 - [#8]: `validate-skills.sh` checks that the `.claude/skills` compatibility path still
   resolves to `skills/`, and that `plugin.json` and `CHANGELOG.md` agree on the version.
 

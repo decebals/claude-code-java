@@ -142,6 +142,20 @@ for dir in "$SKILLS_DIR"/*/; do
     [ "$lines" -le 500 ] || warn "$name: SKILL.md is $lines lines, the spec recommends under 500"
 done
 
+# A skill with no routing case is a skill nobody checks. Worse, a new skill competes
+# with every existing one for the same prompts, so adding one without a case can move
+# traffic away from another and go unnoticed. This is a plain text check, no API key,
+# so it runs on pull requests from forks too.
+CASES="$WORKSPACE_DIR/evals/routing.tsv"
+if [ -f "$CASES" ]; then
+    for dir in "$SKILLS_DIR"/*/; do
+        [ -d "$dir" ] || continue
+        skill="$(basename "$dir")"
+        grep -qE "	$skill\$" "$CASES" \
+            || fail "$skill: no case in evals/routing.tsv, add one and rerun eval-routing.sh"
+    done
+fi
+
 # One version, two files that must agree. plugin.json is the anchor; the changelog's
 # top released heading has to match it, so a release cannot half-happen.
 MANIFEST="$WORKSPACE_DIR/plugin.json"

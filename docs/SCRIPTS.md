@@ -55,9 +55,15 @@ cd /path/to/claude-code-java
 
 Errors fail the run, recommendations are reported as warnings.
 
-Beyond the spec, it checks two things specific to this repository: that the `.claude/skills`
+Beyond the spec it checks three things specific to this repository: that the `.claude/skills`
 compatibility symlink still resolves to `skills/`, which a checkout without symlink support
-silently breaks, and that `plugin.json` and `CHANGELOG.md` carry the same version.
+silently breaks; that `plugin.json` and `CHANGELOG.md` carry the same version; and that every
+skill has at least one case in `evals/routing.tsv`.
+
+That last one is a plain text check with no API call, so it runs on pull requests from forks.
+It exists because a skill with no case is a skill nobody checks, and because a new skill
+competes with the existing ones for the same prompts. Adding one can move traffic away from
+another, which is why the checklist says to run the whole eval, not just the new case.
 
 #### Why two validators
 
