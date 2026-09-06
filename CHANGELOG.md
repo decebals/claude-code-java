@@ -23,12 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Install with `npx skills@latest add decebals/claude-code-java`, for the skills alone.
   The setup script stays the path for the full workspace.
 
-### Fixed
-
-- Skill Review no longer runs on pull requests from forks, where it could only fail:
-  secrets are not passed to fork runs, and the action refuses an actor without write
-  access.
-
 ### Changed
 
 - Sharpened the descriptions of `clean-code`, `solid-principles` and
@@ -38,6 +32,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   standard expects them. `.claude/skills` remains as a symlink, so existing links and the
   paths in our own documentation keep working. On a checkout without symlink support,
   Windows without developer mode being the usual case, use `skills/` directly.
+
+### Fixed
+
+- Skill Review no longer runs on pull requests from forks, where it could only fail:
+  secrets are not passed to fork runs, and the action refuses an actor without write
+  access.
+
 
 ## [1.0.0] - 2026-08-28
 
