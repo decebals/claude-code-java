@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fall behind the skill set.
 - [#8]: `validate-skills.sh` checks that the `.claude/skills` compatibility path still
   resolves to `skills/`, and that `plugin.json` and `CHANGELOG.md` agree on the version.
+- Install with `npx skills@latest add decebals/claude-code-java`, for the skills alone.
+  The setup script stays the path for the full workspace.
 
 ### Changed
 

@@ -43,6 +43,19 @@ AI-powered development workflows with focus on:
 
 ## Quick Start
 
+### Skills only
+
+```bash
+npx skills@latest add decebals/claude-code-java
+```
+
+No clone, no setup script. Add `--list` to see the skills first, `--skill <name>` to install
+only some of them, `--global` to install at user level instead of the current project, or
+`--copy` to get files instead of symlinks.
+
+For the skills plus `CLAUDE.md` generation, MCP configuration and project settings, continue
+below.
+
 ### 1. Clone this workspace
 ```bash
 git clone https://github.com/decebals/claude-code-java.git ~/projects/claude-code-java
