@@ -8,13 +8,17 @@ on:
 
 jobs:
   review:
+    # Secrets are not passed to runs from a fork, and the action refuses to start for an
+    # actor without write access. Skipping is honest; the alternative is a red check that
+    # no contributor can fix.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
