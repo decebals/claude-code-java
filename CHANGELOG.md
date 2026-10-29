@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `test-quality` examples: the detailed exception check chained `hasCauseInstanceOf()` and
+  `hasNoCause()`, which can never both pass; the Mockito example verified a call it had
+  only stubbed, which Mockito documents as redundant; JaCoCo 0.8.11 predates Java 25
+  support, now 0.8.14.
 - Skill Review no longer runs on pull requests from forks, where it could only fail:
   secrets are not passed to fork runs, and the action refuses an actor without write
   access.
