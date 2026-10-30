@@ -60,7 +60,7 @@ Validate your skill idea against existing skills:
 - [ ] **Focused scope** - Can be applied in one session (<15 checklist items)
 - [ ] **Spec compliant** - `./scripts/validate-skills.sh` passes
 
-> 📖 **Full guidelines:** [docs/SKILL_GUIDELINES.md](../../docs/SKILL_GUIDELINES.md)
+> 📖 **Full guidelines:** [docs/SKILL_GUIDELINES.md](../docs/SKILL_GUIDELINES.md)
 
 ### Implementation Steps
 
